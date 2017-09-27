@@ -1,17 +1,32 @@
 // Copyright (c) 2017, SERAGUD. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
+library grizzly.regress;
+
 import 'package:grizzly_series/grizzly_series.dart';
+
+part 'linear_regression.dart';
+part 'multivariate_linear_regression.dart';
 
 /// Defines interface for Linear Models
 abstract class LinearModel {
   /// Fit model
-  LinearModel fit(Array<num> x, Array<num> y);
+  LinearModel fit(NumericArray<num> x, NumericArray<num> y);
 
   /// Fit model
-  LinearModel fitMultipleX(Array2D<num> x, Array2D<num> y);
+  LinearModel fitMultipleX(Numeric2DArray<num> x, NumericArray<num> y);
 
-  dynamic /* TODO */ predict(x);
+  // TODO dynamic /* TODO */ predict(x);
+}
+
+abstract class MultivariateLinearModel {
+  /// Fit model
+  LinearModel fit(NumericArray<num> x, Numeric2DArray<num> y);
+
+  /// Fit model
+  LinearModel fitMultipleX(Numeric2DArray<num> x, Numeric2DArray<num> y);
+
+// TODO dynamic /* TODO */ predict(x);
 }
 
 /// Defines interface for regression estimators
@@ -22,54 +37,81 @@ abstract class RegressorMixin {
   }
 }
 
-/// Ordinary least squares Linear Regression
-class LinearRegression extends LinearModel with RegressorMixin {
-  /// Whether to calculate the intercept for this model
-  ///
-  /// If set to false, no intercept will be used in calculations (e.g. data is
-  /// expected to be already centered).
-  ///
-  /// Defaults to true.
-  final bool fitIntercept;
+class LMProcessedData {
+  final Numeric2DArray x;
 
-  /// If true, the regressors X  will be normalized before regression by
-  /// subtracting the mean and dividing by the 12-norm.
-  ///
-  /// It is ignored when [fitIntercept] is false.
-  ///
-  /// TODO clarify confusion with standardization
-  ///
-  /// Defaults to false
-  final bool normalize;
+  final NumericArray y;
 
-  /// Estimated coefficients for the linear regression problem
-  dynamic _coeff;
+  final double xOffset;
 
-  /// Independent term in the linear model
-  dynamic _intercept;
+  final double yOffset;
 
-  LinearRegression(this.fitIntercept, this.normalize);
+  final double xScale;
 
-  LinearRegression fit(Array<num> x, Array<num> y) {
-    // TODO check X and Y
+  LMProcessedData(this.x, this.y, this.xOffset, this.yOffset, this.xScale);
 
-    // TODO check sample weights
+  factory LMProcessedData.process(Numeric2DArray x, NumericArray y,
+      {Numeric2DArray weights,
+      bool fitIntercept: true,
+      bool normalize: false,
+      bool copy: true}) {
+    if (copy) {
+      x = x.makeFrom(x);
+      y = y.makeFrom(y);
+    }
 
-    // TODO process data
+    double xOffset;
+    double xScale;
+    double yOffset;
+    if (fitIntercept) {
+      if (weights != null) {
+        xOffset = x.average(weights);
+        yOffset = y.average(weights);
+      } else {
+        xOffset = x.mean;
+        yOffset = y.mean;
+      }
+      x.subtract(xOffset);
+      y.subtract(yOffset);
 
-    // TODO sample weight
+      if (normalize) {
+        //TODO
+        throw new UnimplementedError();
+      } else {
+        xScale = 1.0;
+      }
+    } else {
+      xOffset = 0.0;
+      xScale = 1.0;
+      yOffset = 0.0;
+    }
 
-    // TODO linalg.lstsq
-
-    // TODO
+    return new LMProcessedData(x, y, xOffset, yOffset, xScale);
   }
+}
 
-  LinearRegression fitMultipleX(Array2D<num> x, Array2D<num> y) {
+/// Compute least-squares solution to equation Ax = b
+LstSqResult lstsq(Numeric2DArray a, NumericArray b,
+    {int steps: 200, double learningRate, double regularization}) {
+  final DoubleArray coeff = new DoubleArray.sized(a.shape.x);
+  final DoubleArray residuals = new DoubleArray.sized(a.shape.y);
+  for(int step = 0; step < steps; step++) {
+
     //TODO
   }
+  //TODO
+  return new LstSqResult(coeff, residuals);
+}
 
-  // TODO
-  dynamic processData(Array<int> x, Array<int> y) {
-    //TODO
-  }
+dynamic lstsqMultivariate(
+    Iterable<Iterable<num>> a, Iterable<Iterable<num>> b) {
+  //TODO
+}
+
+class LstSqResult {
+  final DoubleArray coeff;
+
+  final DoubleArray residues;
+
+  LstSqResult(this.coeff, this.residues);
 }
