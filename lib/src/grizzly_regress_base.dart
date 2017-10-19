@@ -3,115 +3,231 @@
 
 library grizzly.regress;
 
+import 'package:meta/meta.dart';
 import 'package:grizzly_series/grizzly_series.dart';
+import 'package:grizzly_regress/src/linalg/qr.dart';
+import 'package:grizzly_regress/src/linalg/lu.dart';
 
-part 'linear_regression.dart';
-part 'multivariate_linear_regression.dart';
+part 'linear/ols.dart';
+part 'linear/multivariate_ols.dart';
 
 /// Defines interface for Linear Models
-abstract class LinearModel {
+abstract class Regression {
   /// Fit model
-  LinearModel fit(NumericArray<num> x, NumericArray<num> y);
+  RegressionResult fit(Numeric1D x, Numeric1D y, {bool fitIntercept: false});
 
   /// Fit model
-  LinearModel fitMultipleX(Numeric2DArray<num> x, NumericArray<num> y);
-
-  // TODO dynamic /* TODO */ predict(x);
+  RegressionResult fitMultipleX(Numeric2D x, Numeric1D y,
+      {bool fitIntercept: false});
 }
 
-abstract class MultivariateLinearModel {
+/// Defines interface for multivariate Linear model
+abstract class MultivariateRegression {
   /// Fit model
-  LinearModel fit(NumericArray<num> x, Numeric2DArray<num> y);
+  RegressionResult fit(Numeric1D x, Numeric2D y);
 
   /// Fit model
-  LinearModel fitMultipleX(Numeric2DArray<num> x, Numeric2DArray<num> y);
-
-// TODO dynamic /* TODO */ predict(x);
+  RegressionResult fitMultipleX(Numeric2D x, Numeric2D y);
 }
 
-/// Defines interface for regression estimators
-abstract class RegressorMixin {
-  /// Computes and returns R^2 (coefficient of determination) of the prediction
-  double score(x, y, {sampleWeights}) {
-    //TODO
-  }
-}
+abstract class RegressionModel {
+  /// Estimated coefficients for the linear regression problem
+  Double1DView get coeff;
 
-class LMProcessedData {
-  final Numeric2DArray x;
+  /// Is the intercept induced by the model?
+  bool get interceptFitted;
 
-  final NumericArray y;
-
-  final double xOffset;
-
-  final double yOffset;
-
-  final double xScale;
-
-  LMProcessedData(this.x, this.y, this.xOffset, this.yOffset, this.xScale);
-
-  factory LMProcessedData.process(Numeric2DArray x, NumericArray y,
-      {Numeric2DArray weights,
-      bool fitIntercept: true,
-      bool normalize: false,
-      bool copy: true}) {
-    if (copy) {
-      x = x.makeFrom(x);
-      y = y.makeFrom(y);
-    }
-
-    double xOffset;
-    double xScale;
-    double yOffset;
-    if (fitIntercept) {
-      if (weights != null) {
-        xOffset = x.average(weights);
-        yOffset = y.average(weights);
-      } else {
-        xOffset = x.mean;
-        yOffset = y.mean;
-      }
-      x.subtract(xOffset);
-      y.subtract(yOffset);
-
-      if (normalize) {
-        //TODO
-        throw new UnimplementedError();
-      } else {
-        xScale = 1.0;
-      }
+  /// Independent term in the linear model
+  double get intercept {
+    if (interceptFitted) {
+      return coeff[0];
     } else {
-      xOffset = 0.0;
-      xScale = 1.0;
-      yOffset = 0.0;
+      return 0.0;
+    }
+  }
+
+  double predict(Iterable<num> x) {
+    if (interceptFitted) {
+      if ((x.length + 1) != coeff.length)
+        throw new ArgumentError.value(x, 'x', 'Invalid independent variables!');
+
+      double ret = coeff[0];
+
+      ret += coeff.slice(1).dot(x); // TODO use sliceView
+
+      return ret;
+    } else {
+      if (x.length != coeff.length)
+        throw new ArgumentError.value(x, 'x', 'Invalid independent variables!');
+
+      return coeff.dot(x);
+    }
+  }
+
+  Double1D predictMany(Iterable<Iterable<num>> x) {
+    final ret = new Double1D.sized(x.length);
+
+    for (int i = 0; i < x.length; i++) {
+      Iterable<num> row = x.elementAt(i);
+      ret[i] = predict(row);
     }
 
-    return new LMProcessedData(x, y, xOffset, yOffset, xScale);
+    return ret;
   }
 }
 
-/// Compute least-squares solution to equation Ax = b
-LstSqResult lstsq(Numeric2DArray a, NumericArray b,
-    {int steps: 200, double learningRate, double regularization}) {
-  final DoubleArray coeff = new DoubleArray.sized(a.shape.x);
-  final DoubleArray residuals = new DoubleArray.sized(a.shape.y);
-  for(int step = 0; step < steps; step++) {
+abstract class RegressionResultBase {
+  Double1DView get coeff;
 
-    //TODO
+  bool get interceptFitted;
+
+  Double2DView get covMatrix;
+
+  Numeric2DView get x;
+
+  Numeric1DView get y;
+
+  int get xRank;
+
+  int get numObservations;
+
+  int get dof;
+
+  int get dofResiduals;
+
+  Double1DView get residuals;
+
+  double get ssr;
+
+  double get tss;
+
+  double get centeredTss;
+
+  double get ess;
+
+  double get r2;
+
+  double get r2Adjusted;
+
+  Double1D get bse;
+
+  double get mse;
+
+  double get mseResiduals;
+
+  double get mseTotal;
+
+  // TODO
+}
+
+class RegressionResult extends RegressionModel implements RegressionResultBase {
+  /// Estimated coefficients for the linear regression problem
+  final Double1DView coeff;
+
+  /// Is the intercept induced by the model?
+  final bool interceptFitted;
+
+  // TODO make this view
+  /// Covariance matrix of exogenous variables X
+  final Double2DView covMatrix;
+
+  // TODO make this view
+  /// Exogenous variables
+  final Numeric2DView x;
+
+  // TODO make this view
+  /// Endogenous variables
+  final Numeric1DView y;
+
+  /// Rank of [x]
+  final int xRank;
+
+  RegressionResult(this.coeff,
+      {@required this.x,
+      @required this.y,
+      @required this.covMatrix,
+      @required this.xRank,
+      this.interceptFitted: false}) {
+    if (coeff.length < 2) throw new Exception('Intercepted not fitted!');
   }
-  //TODO
-  return new LstSqResult(coeff, residuals);
-}
 
-dynamic lstsqMultivariate(
-    Iterable<Iterable<num>> a, Iterable<Iterable<num>> b) {
-  //TODO
-}
+  // TODO scale
 
-class LstSqResult {
-  final DoubleArray coeff;
+  /// Number of observations
+  int get numObservations => x.numRows;
 
-  final DoubleArray residues;
+  /// The model degree of freedom
+  ///
+  /// Defined as the rank of the regressor matrix minus 1 if a constant is included
+  int get dof => interceptFitted ? (xRank - 1) : xRank;
 
-  LstSqResult(this.coeff, this.residues);
+  /// The residual degree of freedom
+  ///
+  /// Defined as the number of observations minus the rank of the regressor matrix.
+  int get dofResiduals => numObservations - xRank;
+
+  Double1DView _residuals;
+
+  /// The residuals of the model
+  Double1DView get residuals =>
+      _residuals ??= (y - predictMany(x)).toDouble.view;
+
+  double _ssr;
+
+  /// Sum of squared residuals (TODO: whitened?)
+  double get ssr => _ssr ??= residuals.dot(residuals);
+
+  double _tss;
+
+  /// Un-centered sum of squares.
+  ///
+  /// Sum of the squared values of the endogenous response variable
+  double get tss => _tss ??= y.dot(y);
+
+  double _centeredTss;
+
+  double get centeredTss {
+    if (_centeredTss != null) return _centeredTss;
+
+    final Double1D centeredY = y - y.mean;
+    _centeredTss = centeredY.dot(centeredY);
+    return _centeredTss;
+  }
+
+  /// Explained sum of squares.
+  ///
+  /// If a constant is present, the centered total sum of squares minus the sum
+  /// of squared residuals.
+  /// If there is no constant, the un-centered total sum of squares is used.
+  double get ess => interceptFitted ? (centeredTss - ssr) : (tss - ssr);
+
+  /// R-squared of a model with an intercept.
+  ///
+  /// This is defined here as 1 - [ssr]/[tss] if the constant is
+  /// included in the model.
+  /// 1 - [ssr]/[uncenteredTss] if the constant is omitted.
+  double get r2 => interceptFitted ? (1 - ssr / centeredTss) : (1 - ssr / tss);
+
+  double get r2Adjusted {
+    if (!interceptFitted) {
+      return 1 - (numObservations / dofResiduals) * (1 - r2);
+    } else {
+      return 1 - ((numObservations - 1) / dofResiduals) * (1 - r2);
+    }
+  }
+
+  /// The standard errors of the parameter estimates
+  Double1D get bse => covMatrix.diagonal.sqrt();
+
+  double get mse => ess / dof;
+
+  double get mseResiduals => ssr / dofResiduals;
+
+  double get mseTotal {
+    if (interceptFitted) {
+      return centeredTss / (dof + dofResiduals);
+    } else {
+      return tss / (dof + dofResiduals);
+    }
+  }
 }

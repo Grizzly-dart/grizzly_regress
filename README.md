@@ -1,19 +1,19 @@
 # grizzly_regress
 
-A library for Dart developers. It is awesome.
+Regression models for Dart
 
-## Usage
+# TODO
 
-A simple usage example:
-
-    import 'package:grizzly_regress/grizzly_regress.dart';
-
-    main() {
-      var awesome = new Awesome();
-    }
-
-## Features and bugs
-
-Please file feature requests and bugs at the [issue tracker][tracker].
-
-[tracker]: http://example.com/issues/replaceme
+- [ ] Linear regression
+    - [ ] OLS
+        - [ ] Closed form
+        - [ ] Gradient descent
+    - [ ] WLS
+    - [ ] GLS
+    - [ ] Others
+- [ ] Linear regression result
+    - [ ] R^2
+    - [ ] R^2 adjusted
+    - [ ] F-value
+    - [ ] MSE
+- [ ] Logistic regression
