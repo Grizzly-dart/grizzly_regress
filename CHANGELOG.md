@@ -1,5 +1,6 @@
 # Changelog
 
-## 0.0.1
+## 0.0.1-dev
 
-- Initial version, created by Stagehand
+- `OLS` implementation
+- `RegressionResult` implementation
