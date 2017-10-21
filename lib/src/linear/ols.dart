@@ -76,21 +76,6 @@ class OLS implements LinearRegression {
   }
 }
 
-/// Ordinary least square regression performed using gradient descent
-class OLSGD implements LinearRegression {
-  const OLSGD();
-
-  RegressionResult fit(Numeric1D x, Numeric1D y,
-      {bool fitIntercept: false}) {
-    // TODO
-  }
-
-  RegressionResult fitMultipleX(Numeric2D x, Numeric1D y,
-      {bool fitIntercept: false}) {
-    // TODO
-  }
-}
-
 /// Ordinary least square regression performed using stochastic gradient descent
 class OLSStochasticGD implements LinearRegression {
   const OLSStochasticGD();

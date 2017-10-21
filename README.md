@@ -17,3 +17,8 @@ Regression models for Dart
     - [ ] F-value
     - [ ] MSE
 - [ ] Logistic regression
+
+## Extra  
+- [ ] Ensemble
+- [ ] Model selection
+- [ ] Plots
