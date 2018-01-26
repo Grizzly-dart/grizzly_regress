@@ -127,34 +127,6 @@ main() {
   */
 
   /*
-  final x = new Double2DArray.fromNum([
-    [1],
-    [2],
-    [3],
-    [4],
-    [5],
-  ]);
 
-  final y = x.col[0] * 5;
-  print(y);
-
-  final xQR = qr(x);
-  print(xQR.q);
-  print(xQR.r);
-
-  print(xQR.q.dot(xQR.r));
-
-  print(xQR.solve(y.transpose()));
   */
-
-  /*
-  print(array2D([
-        [3.0, 1.0],
-        [1.0, 2.0]
-      ]) *
-      array2D([
-        [2.0],
-        [3.0]
-      ]));
-      */
 }

@@ -43,7 +43,7 @@ class OLS implements LinearRegression {
     final QR xQR = qr(tempX);
     // TODO normalize covMatrix
     final Double2D covMatrix = xQR.r.transpose * xQR.r;
-    final coeff = xQR.solve(y.transpose).col[0];
+    final Double1DFix coeff = xQR.solve(y.transpose).col[0];
 
     // TODO x, y must be copied views
     return new RegressionResult(coeff, x: tempX, y: y,
