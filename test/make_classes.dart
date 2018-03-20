@@ -1,5 +1,5 @@
 import 'package:grizzly_regress/grizzly_regress.dart';
-import 'package:grizzly_series/grizzly_series.dart';
+import 'package:grizzly_array/grizzly_array.dart';
 import 'package:test/test.dart';
 
 void main() {
