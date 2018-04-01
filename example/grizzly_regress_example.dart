@@ -1,12 +1,12 @@
 // Copyright (c) 2017, SERAGUD. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
-import 'package:grizzly_series/grizzly_series.dart';
+import 'package:grizzly_array/grizzly_array.dart';
 import 'package:grizzly_regress/grizzly_regress.dart';
 import 'package:grizzly_linalg/grizzly_linalg.dart';
 
 main() {
-  final a = array2D([
+  final a = array2([
     [1, 0, 1],
     [-1, -2, 0],
     [0, 1, -1]
@@ -21,13 +21,13 @@ main() {
   ]);
   */
 
-  final svd = new SVD(a);
-  print(svd.u);
-  print(svd.s);
-  print(svd.v);
-  print(svd.u *
-      new Double2D.diagonal(svd.s) *
-      svd.v.transpose);
+  final SVD asvd = svd(a);
+  print(asvd.u);
+  print(asvd.s);
+  print(asvd.v);
+  print(asvd.u *
+      new Double2D.diagonal(asvd.s) *
+      asvd.v.transpose);
 
   /* TODO
   final u = array2D([
@@ -127,34 +127,6 @@ main() {
   */
 
   /*
-  final x = new Double2DArray.fromNum([
-    [1],
-    [2],
-    [3],
-    [4],
-    [5],
-  ]);
 
-  final y = x.col[0] * 5;
-  print(y);
-
-  final xQR = qr(x);
-  print(xQR.q);
-  print(xQR.r);
-
-  print(xQR.q.dot(xQR.r));
-
-  print(xQR.solve(y.transpose()));
   */
-
-  /*
-  print(array2D([
-        [3.0, 1.0],
-        [1.0, 2.0]
-      ]) *
-      array2D([
-        [2.0],
-        [3.0]
-      ]));
-      */
 }

@@ -9,11 +9,24 @@ environment:
   sdk: '>=1.20.1 <2.0.0'
 
 dependencies:
-  grizzly_series: ^0.0.10-dev
-  grizzly_linalg: ^0.0.1-dev
-#  grizzly_series:
-#    path:
-#      ../grizzly_series
-#  grizzly_linalg:
-#    path:
-#      ../grizzly_linalg
+  meta: ^1.1.2
+  grizzly_array:
+    path:
+      ../grizzly_array
+  grizzly_linalg:
+    path:
+      ../grizzly_linalg
+
+dev_dependencies:
+  test:
+
+dependency_overrides:
+  grizzly_array:
+    path:
+      ../grizzly_array
+  grizzly_linalg:
+    path:
+      ../grizzly_linalg
+  grizzly_primitives:
+    path:
+      ../grizzly_primitives

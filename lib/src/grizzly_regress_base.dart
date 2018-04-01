@@ -3,16 +3,20 @@
 
 library grizzly.regress;
 
+import 'dart:math' as math;
 import 'package:meta/meta.dart';
-import 'package:grizzly_series/grizzly_series.dart';
+import 'package:grizzly_array/grizzly_array.dart';
 import 'package:grizzly_linalg/grizzly_linalg.dart';
 
+part 'core/model.dart';
+part 'core/result.dart';
+
+part 'linear/linear.dart';
 part 'linear/ols.dart';
 part 'linear/ols_gd.dart';
 part 'linear/multivariate_ols.dart';
 
-part 'core/model.dart';
-part 'core/result.dart';
+part 'logistic/logistic.dart';
 
 /// Defines interface for regression
 abstract class Regression {
