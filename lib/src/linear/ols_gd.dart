@@ -1,5 +1,19 @@
 part of grizzly.regress;
 
+/// Ordinary least square regression performed using stochastic gradient descent
+class OLSStochasticGD implements LinearRegression {
+  const OLSStochasticGD();
+
+  RegressionResult fit(Numeric1D x, Numeric1D y, {bool fitIntercept: false}) {
+    // TODO
+  }
+
+  RegressionResult fitMultipleX(Numeric2D x, Numeric1D y,
+      {bool fitIntercept: false}) {
+    // TODO
+  }
+}
+
 /// Ordinary least square regression performed using gradient descent
 class OLSGD implements LinearRegression {
   /// Learning rate used in gradient descent
@@ -19,7 +33,7 @@ class OLSGD implements LinearRegression {
       {bool fitIntercept: false}) {
     Numeric2D tempX = x;
     if (fitIntercept) {
-      tempX = x.toDouble;
+      tempX = x.toDouble();
       tempX.col.insertScalar(0, 1.0);
     }
     final gd = new BatchLeastSquareGradientDescent(tempX, y,

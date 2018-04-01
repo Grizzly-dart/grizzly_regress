@@ -19,3 +19,14 @@ dependencies:
 
 dev_dependencies:
   test:
+
+dependency_overrides:
+  grizzly_array:
+    path:
+      ../grizzly_array
+  grizzly_linalg:
+    path:
+      ../grizzly_linalg
+  grizzly_primitives:
+    path:
+      ../grizzly_primitives

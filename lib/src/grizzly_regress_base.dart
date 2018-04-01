@@ -11,6 +11,7 @@ import 'package:grizzly_linalg/grizzly_linalg.dart';
 part 'core/model.dart';
 part 'core/result.dart';
 
+part 'linear/linear.dart';
 part 'linear/ols.dart';
 part 'linear/ols_gd.dart';
 part 'linear/multivariate_ols.dart';
