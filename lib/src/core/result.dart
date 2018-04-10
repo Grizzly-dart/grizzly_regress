@@ -14,7 +14,7 @@ class RegressionResult extends RegressionModel implements RegressionResultBase {
   final bool interceptFitted;
 
   /// Covariance matrix of exogenous variables X
-  final Double2DView covMatrix;
+  final Double2DView covariance;
 
   /// Rank of [x]
   final int xRank;
@@ -22,7 +22,7 @@ class RegressionResult extends RegressionModel implements RegressionResultBase {
   RegressionResult(this.coeff,
       {@required this.x,
       @required this.y,
-      @required this.covMatrix,
+      @required this.covariance,
       @required this.xRank,
       this.interceptFitted: false}) {
     if (coeff.length < 2 && interceptFitted)
@@ -95,7 +95,7 @@ class RegressionResult extends RegressionModel implements RegressionResultBase {
   }
 
   /// The standard errors of the parameter estimates
-  Double1D get bse => covMatrix.diagonal.sqrt();
+  Double1D get bse => covariance.diagonal.sqrt();
 
   double get mse => ess / dof;
 

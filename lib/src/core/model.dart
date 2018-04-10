@@ -54,7 +54,7 @@ abstract class RegressionResultBase {
 
   bool get interceptFitted;
 
-  Double2DView get covMatrix;
+  Double2DView get covariance;
 
   Numeric2DView get x;
 

@@ -6,11 +6,13 @@ import 'package:grizzly_regress/grizzly_regress.dart';
 import 'package:grizzly_linalg/grizzly_linalg.dart';
 
 main() {
+  /*
   final a = array2([
     [1, 0, 1],
     [-1, -2, 0],
     [0, 1, -1]
   ]);
+  */
 
   /*
   final a = array2D([
@@ -21,6 +23,7 @@ main() {
   ]);
   */
 
+  /*
   final SVD asvd = svd(a);
   print(asvd.u);
   print(asvd.s);
@@ -28,6 +31,7 @@ main() {
   print(asvd.u *
       new Double2D.diagonal(asvd.s) *
       asvd.v.transpose);
+      */
 
   /* TODO
   final u = array2D([
