@@ -13,16 +13,17 @@ part of grizzly.regress;
 ///     final RegressionResult res = ols.fitMultipleX(x, y);
 ///     print(res.coeff); // => (-7.501368540301152, -9.501368540301195, 16.50136854030119)
 ///     print(res.predict(x[0].toInt())); // => 16.000000000000036
-const OLS ols = const OLS();
+const Ols ols = const Ols();
 
 /// Ordinary Least Square regression performed by directly solving 'X * B = Y'.
 ///
 /// Uses QR decomposition to solve 'XB=Y' when X is full rank.
 /// Uses LU decomposition to solve 'XB=Y' when X is not full rank.
-class OLS implements LinearRegression {
-  const OLS();
+class Ols implements LinearRegression {
+  const Ols();
 
-  RegressionResult fit(Numeric1DView x, Numeric1DView y,
+  @override
+  RegressionResult fitOne(Numeric1DView x, Numeric1DView y,
       {bool fitIntercept: false}) {
     Numeric2D<double> procX;
     if (fitIntercept) {
@@ -48,7 +49,8 @@ class OLS implements LinearRegression {
         xRank: xSvd.rank());
   }
 
-  RegressionResult fitMultipleX(Numeric2D x, Numeric1DView y,
+  @override
+  RegressionResult fit(Numeric2D x, Numeric1DView y,
       {bool fitIntercept: false}) {
     Numeric2D tempX = x;
     if (fitIntercept) {
@@ -72,16 +74,28 @@ class OLS implements LinearRegression {
           x: tempX, y: y, covariance: covMatrix, interceptFitted: fitIntercept);
     }
   }
+
+  /// Fit simple model with one independent variable
+  RegressionResult fitOneMultivariate(Numeric1D x, Numeric2D y) {
+    // TODO
+    throw new UnimplementedError();
+  }
+
+  /// Fit model with multiple independent variable
+  RegressionResult fitMultivariate(Numeric2D x, Numeric2D y) {
+    // TODO
+    throw new UnimplementedError();
+  }
 }
 
 /// Ordinary Least Square regression performed by directly solving 'X * B = Y'.
 ///
 /// Uses QR decomposition to solve 'XB=Y' when X is full rank.
 /// Uses LU decomposition to solve 'XB=Y' when X is not full rank.
-class OLSWithQr implements LinearRegression {
-  const OLSWithQr();
+class OlsWithQr implements LinearRegression {
+  const OlsWithQr();
 
-  RegressionResult fit(Numeric1DView x, Numeric1DView y,
+  RegressionResult fitOne(Numeric1DView x, Numeric1DView y,
       {bool fitIntercept: false}) {
     Numeric2D<double> procX;
     if (fitIntercept) {
@@ -100,7 +114,7 @@ class OLSWithQr implements LinearRegression {
         x: procX, y: y, covariance: covMatrix, interceptFitted: fitIntercept);
   }
 
-  RegressionResult fitMultipleX(Numeric2D x, Numeric1DView y,
+  RegressionResult fit(Numeric2D x, Numeric1DView y,
       {bool fitIntercept: false}) {
     Numeric2D tempX = x;
     if (fitIntercept) {
@@ -123,5 +137,17 @@ class OLSWithQr implements LinearRegression {
       return new RegressionResult(coeff,
           x: tempX, y: y, covariance: covMatrix, interceptFitted: fitIntercept);
     }
+  }
+
+  /// Fit simple model with one independent variable
+  RegressionResult fitOneMultivariate(Numeric1D x, Numeric2D y) {
+    // TODO
+    throw new UnimplementedError();
+  }
+
+  /// Fit model with multiple independent variable
+  RegressionResult fitMultivariate(Numeric2D x, Numeric2D y) {
+    // TODO
+    throw new UnimplementedError();
   }
 }

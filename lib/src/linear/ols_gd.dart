@@ -1,5 +1,6 @@
 part of grizzly.regress;
 
+/* TODO
 /// Ordinary least square regression performed using stochastic gradient descent
 class OLSStochasticGD implements LinearRegression {
   const OLSStochasticGD();
@@ -44,3 +45,4 @@ class OLSGD implements LinearRegression {
         x: tempX, y: y, interceptFitted: fitIntercept);
   }
 }
+*/

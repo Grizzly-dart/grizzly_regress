@@ -12,7 +12,7 @@ main() {
 
   Double1D b = a * 5;
 
-  final res = ols.fit(a, b);
+  final res = ols.fitOne(a, b);
   print(res.x.transpose);
   print(res.y);
   print(res.coeff);

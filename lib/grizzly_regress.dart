@@ -7,5 +7,3 @@
 library grizzly_regress;
 
 export 'src/grizzly_regress_base.dart';
-
-// TODO: Export any libraries intended for clients of this package.
