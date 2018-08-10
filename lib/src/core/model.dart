@@ -3,7 +3,7 @@ part of grizzly.regress;
 /// Mixin for regression model
 abstract class RegressionModel {
   /// Estimated coefficients for the linear regression problem
-  Double1DView get coeff;
+  Double1DFix get coeff;
 
   /// Is the intercept induced by the model?
   bool get interceptFitted;
@@ -11,7 +11,7 @@ abstract class RegressionModel {
   /// Independent term in the linear model
   double get intercept {
     if (interceptFitted) {
-      return coeff[0];
+      return coeff.last;
     } else {
       return 0.0;
     }
@@ -19,19 +19,21 @@ abstract class RegressionModel {
 
   /// Predicts y_hat for given single independent variable sample [x] and
   /// coefficient [coeff]
-  double predict(Numeric1DView x) {
+  double predictOne(Numeric1DView x) {
     if (interceptFitted) {
       if ((x.length + 1) != coeff.length)
-        throw new ArgumentError.value(x, 'x', 'Invalid independent variables!');
+        throw new ArgumentError.value(
+            "Have ${coeff.length} coefficients (with intercept fitted). But number of exogeneous variables is ${x.length}. ${coeff.length - 1} exogenous variables expected!");
 
-      double ret = coeff[0];
+      double ret = coeff.last;
 
-      ret += coeff.slice(1).dot(x); // TODO use sliceView
+      ret += coeff.slice(0, coeff.length - 1).dot(x); // TODO use sliceView
 
       return ret;
     } else {
       if (x.length != coeff.length)
-        throw new ArgumentError.value(x, 'x', 'Invalid independent variables!');
+        throw new ArgumentError(
+            "Have ${coeff.length} coefficients. But number of exogeneous variables is ${x.length}! ${coeff.length} exogenous variables expected!");
 
       return coeff.dot(x);
     }
@@ -39,10 +41,10 @@ abstract class RegressionModel {
 
   /// Predicts y_hat for given multiple independent variable samples [x] and
   /// coefficient [coeff]
-  Double1D predictMany(Numeric2DView x) {
+  Double1D predict(Numeric2DView x) {
     final ret = new Double1D.sized(x.numRows);
-    for (int i = 0; i < x.numCols; i++) {
-      ret[i] = predict(x.col[i]);
+    for (int i = 0; i < x.numRows; i++) {
+      ret[i] = predictOne(x[i]);
     }
     return ret;
   }

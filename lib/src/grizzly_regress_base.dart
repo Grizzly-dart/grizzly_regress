@@ -7,6 +7,7 @@ import 'dart:math' as math;
 import 'package:meta/meta.dart';
 import 'package:grizzly_array/grizzly_array.dart';
 import 'package:grizzly_linalg/grizzly_linalg.dart';
+import 'package:text_table/text_table.dart';
 
 part 'core/base.dart';
 part 'core/model.dart';
@@ -27,8 +28,10 @@ abstract class Regression {
   RegressionResult fit(Numeric2D x, Numeric1D y, {bool fitIntercept: false});
 
   /// Fit simple model with one independent variable
-  RegressionResult fitOneMultivariate(Numeric1D x, Numeric2D y);
+  List<RegressionResult> fitOneMultivariate(Numeric1D x, Numeric2D y,
+      {bool fitIntercept: false});
 
   /// Fit model with multiple independent variable
-  RegressionResult fitMultivariate(Numeric2D x, Numeric2D y);
+  List<RegressionResult> fitMultivariate(Numeric2D x, Numeric2D y,
+      {bool fitIntercept: false});
 }

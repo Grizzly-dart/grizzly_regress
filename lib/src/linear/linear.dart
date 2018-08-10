@@ -6,4 +6,3 @@ abstract class LinearRegression implements Regression {
 
   static const Ols ols = const Ols();
 }
-
