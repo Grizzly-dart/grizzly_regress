@@ -2,8 +2,7 @@ part of grizzly.regress;
 
 /// Linear Regression
 abstract class LinearRegression implements Regression {
-  factory LinearRegression() => const OLS();
+  factory LinearRegression() => const Ols();
 
-  static const OLS ols = const OLS();
+  static const Ols ols = const Ols();
 }
-

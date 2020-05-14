@@ -7,32 +7,31 @@ import 'dart:math' as math;
 import 'package:meta/meta.dart';
 import 'package:grizzly_array/grizzly_array.dart';
 import 'package:grizzly_linalg/grizzly_linalg.dart';
+import 'package:text_table/text_table.dart';
 
+part 'core/base.dart';
 part 'core/model.dart';
 part 'core/result.dart';
 
 part 'linear/linear.dart';
 part 'linear/ols.dart';
 part 'linear/ols_gd.dart';
-part 'linear/multivariate_ols.dart';
 
 part 'logistic/logistic.dart';
 
 /// Defines interface for regression
 abstract class Regression {
   /// Fit simple model with one independent variable
-  RegressionResult fit(Numeric1D x, Numeric1D y, {bool fitIntercept: false});
+  RegressionResult fitOne(Numeric1D x, Numeric1D y, {bool fitIntercept: false});
 
   /// Fit model with multiple independent variable
-  RegressionResult fitMultipleX(Numeric2D x, Numeric1D y,
-      {bool fitIntercept: false});
-}
+  RegressionResult fit(Numeric2D x, Numeric1D y, {bool fitIntercept: false});
 
-/// Defines interface for multivariate regression
-abstract class MultivariateRegression {
   /// Fit simple model with one independent variable
-  RegressionResult fit(Numeric1D x, Numeric2D y);
+  List<RegressionResult> fitOneMultivariate(Numeric1D x, Numeric2D y,
+      {bool fitIntercept: false});
 
   /// Fit model with multiple independent variable
-  RegressionResult fitMultipleX(Numeric2D x, Numeric2D y);
+  List<RegressionResult> fitMultivariate(Numeric2D x, Numeric2D y,
+      {bool fitIntercept: false});
 }

@@ -31,7 +31,34 @@ void main() {
         'three',
       ]);
       final classes = new MakeClasses.label(y);
-      print(classes.labels);
+      expect(classes.labels, ['zero', 'one', 'two', 'three', 'five']);
+      expect(classes.counts,
+          {'zero': 3, 'one': 5, 'two': 3, 'three': 5, 'five': 5});
+      expect(classes.labelling,
+          {'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'five': 4});
+      expect(classes.perms, [
+        0,
+        1,
+        3,
+        2,
+        5,
+        6,
+        8,
+        11,
+        4,
+        9,
+        12,
+        7,
+        14,
+        16,
+        18,
+        20,
+        10,
+        13,
+        15,
+        17,
+        19
+      ]);
     });
   });
 }

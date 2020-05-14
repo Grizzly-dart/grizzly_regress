@@ -13,16 +13,106 @@ part of grizzly.regress;
 ///     final RegressionResult res = ols.fitMultipleX(x, y);
 ///     print(res.coeff); // => (-7.501368540301152, -9.501368540301195, 16.50136854030119)
 ///     print(res.predict(x[0].toInt())); // => 16.000000000000036
-const OLS ols = const OLS();
+const Ols ols = const Ols();
 
 /// Ordinary Least Square regression performed by directly solving 'X * B = Y'.
 ///
 /// Uses QR decomposition to solve 'XB=Y' when X is full rank.
 /// Uses LU decomposition to solve 'XB=Y' when X is not full rank.
-class OLS implements LinearRegression {
-  const OLS();
+class Ols implements LinearRegression {
+  const Ols();
 
-  RegressionResult fit(Numeric1DView x, Numeric1DView y,
+  @override
+  RegressionResult fitOne(Numeric1DView x, Numeric1DView y,
+      {bool fitIntercept: false}) {
+    Numeric2D<double> actualX = x.toDouble().to2D();
+    Numeric2D<double> procX = actualX.clone();
+
+    if (fitIntercept) procX.col.addScalar(1.0);
+
+    final SVD xSvd = svd(procX);
+
+    final Numeric2D<double> pinv = xSvd.pinv();
+
+    final Double1DFix coeff = pinv.matmul(y.to2D().toDouble()).col[0];
+    final Double2D cov = pinv.matmul(pinv.transpose);
+
+    // TODO x, y must be copied views
+    return new RegressionResult(coeff,
+        x: actualX,
+        y: y,
+        normalizedCovParams: cov,
+        interceptFitted: fitIntercept,
+        rank: xSvd.rank());
+  }
+
+  @override
+  RegressionResult fit(Numeric2D x, Numeric1DView y,
+      {bool fitIntercept: false}) {
+    Numeric2D<double> actualX = x.toDouble();
+    Numeric2D<double> procX = actualX.clone();
+
+    if (fitIntercept) procX.col.addScalar(1.0);
+
+    final SVD xSvd = svd(procX);
+
+    final Numeric2D<double> pinv = xSvd.pinv();
+
+    final Double1DFix coeff = pinv.matmul(y.to2D().toDouble()).col[0];
+    final Double2D cov = pinv.matmul(pinv.transpose);
+
+    // TODO x, y must be copied views
+    return new RegressionResult(coeff,
+        x: actualX,
+        y: y,
+        normalizedCovParams: cov,
+        interceptFitted: fitIntercept,
+        rank: xSvd.rank());
+  }
+
+  /// Fit simple model with one independent variable
+  List<RegressionResult> fitOneMultivariate(Numeric1DView x, Numeric2DView y,
+      {bool fitIntercept: false}) {
+    Numeric2D<double> actualX = x.toDouble().to2D();
+    Numeric2D<double> procX = actualX.clone();
+
+    if (fitIntercept) procX.col.addScalar(1.0);
+
+    final SVD xSvd = svd(procX);
+
+    final Numeric2D<double> pinv = xSvd.pinv();
+
+    final Double1DFix coeff = pinv.matmul(y.transpose.toDouble()).col[0];
+    final Double2D cov = pinv.matmul(pinv.transpose);
+
+    // TODO x, y must be copied views
+    /* TODO
+    return new MultivariateRegressionResult(coeff,
+        x: procX,
+        y: y,
+        normalizedCovParams: cov,
+        interceptFitted: fitIntercept,
+        rank: xSvd.rank());
+        */
+  }
+
+  /// Fit model with multiple independent variable
+  List<RegressionResult> fitMultivariate(Numeric2D x, Numeric2D y,
+      {bool fitIntercept: false}) {
+    // TODO
+    throw new UnimplementedError();
+  }
+}
+
+/*
+/// Ordinary Least Square regression performed by directly solving 'X * B = Y'.
+///
+/// Uses QR decomposition to solve 'XB=Y' when X is full rank.
+/// Uses LU decomposition to solve 'XB=Y' when X is not full rank.
+class OlsWithQr implements LinearRegression {
+  const OlsWithQr();
+
+  RegressionResult fitOne(Numeric1DView x, Numeric1DView y,
       {bool fitIntercept: false}) {
     Numeric2D<double> procX;
     if (fitIntercept) {
@@ -38,15 +128,15 @@ class OLS implements LinearRegression {
 
     // TODO x, y must be copied views
     return new RegressionResult(coeff,
-        x: procX, y: y, covMatrix: covMatrix, interceptFitted: fitIntercept);
+        x: procX, y: y, covariance: covMatrix, interceptFitted: fitIntercept);
   }
 
-  RegressionResult fitMultipleX(Numeric2D x, Numeric1DView y,
+  RegressionResult fit(Numeric2D x, Numeric1DView y,
       {bool fitIntercept: false}) {
     Numeric2D tempX = x;
     if (fitIntercept) {
       tempX = x.toDouble();
-      tempX.col.insertScalar(0, 1.0);
+      tempX.col.addScalar(1.0);
     }
     final QR xQR = qr(tempX);
     // TODO normalize covMatrix
@@ -56,13 +146,26 @@ class OLS implements LinearRegression {
       final coeff = xQR.solve(y.transpose).col[0];
       // TODO x, y must be copied views
       return new RegressionResult(coeff,
-          x: tempX, y: y, covMatrix: covMatrix, interceptFitted: fitIntercept);
+          x: tempX, y: y, covariance: covMatrix, interceptFitted: fitIntercept);
     } else {
       final Double2D effects = xQR.q.transpose * y.transpose;
       final coeff = solve(xQR.r, effects).col[0];
       // TODO x, y must be copied views
       return new RegressionResult(coeff,
-          x: tempX, y: y, covMatrix: covMatrix, interceptFitted: fitIntercept);
+          x: tempX, y: y, covariance: covMatrix, interceptFitted: fitIntercept);
     }
   }
+
+  /// Fit simple model with one independent variable
+  RegressionResult fitOneMultivariate(Numeric1D x, Numeric2D y) {
+    // TODO
+    throw new UnimplementedError();
+  }
+
+  /// Fit model with multiple independent variable
+  RegressionResult fitMultivariate(Numeric2D x, Numeric2D y) {
+    // TODO
+    throw new UnimplementedError();
+  }
 }
+*/

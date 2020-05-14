@@ -1,6 +1,6 @@
 name: grizzly_regress
 description: Regression models for Dart
-version: 0.0.2-dev
+version: 0.4.2
 homepage: https://github.com/Grizzly-dart/grizzly_regress
 author: Ravi Teja Gudapati <tejainece@gmail.com>
 documentation:
@@ -10,17 +10,13 @@ environment:
 
 dependencies:
   meta: ^1.1.2
-  grizzly_array:
-    path:
-      ../grizzly_array
-  grizzly_linalg:
-    path:
-      ../grizzly_linalg
+  grizzly_array: ^0.4.7
+  grizzly_linalg: ^0.4.2
 
 dev_dependencies:
   test:
 
-dependency_overrides:
+dev_dependency_overrides:
   grizzly_array:
     path:
       ../grizzly_array
