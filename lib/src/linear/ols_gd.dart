@@ -37,11 +37,11 @@ class OLSGD implements LinearRegression {
       tempX = x.toDouble();
       tempX.col.insertScalar(0, 1.0);
     }
-    final gd = new BatchLeastSquareGradientDescent(tempX, y,
+    final gd = BatchLeastSquareGradientDescent(tempX, y,
         learningRate: learningRate, maxIterations: maxIterations);
     gd.learn();
     // TODO x, y must be copied views
-    return new RegressionResult(gd.params,
+    return RegressionResult(gd.params,
         x: tempX, y: y, interceptFitted: fitIntercept);
   }
 }

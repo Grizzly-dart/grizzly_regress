@@ -1,10 +1,10 @@
-import 'package:grizzly_array/grizzly_array.dart';
+import 'package:grizzly/grizzly.dart';
 import 'package:grizzly_regress/grizzly_regress.dart';
 
 void withoutIntercept() {
-  Double1D a = new Int1D.gen(5, (i) => i + 1).toDouble();
+  Iterable<double> a = 1.to(5).doubles();
 
-  Double1D b = a * 5;
+  Iterable<double> b = a * 5;
 
   final res = ols.fitOne(a, b);
   print(res.x.transpose);
@@ -25,9 +25,9 @@ void withoutIntercept() {
 }
 
 void withIntercept() {
-  Double1D a = new Int1D.gen(5, (i) => i + 1).toDouble();
+  Iterable<double> a = 1.to(5).doubles();
 
-  Double1D b = (a * 5) + 3;
+  Iterable<double> b = (a * 5).addition(3);
 
   final res = ols.fitOne(a, b, fitIntercept: true);
   print(res.x.transpose);
@@ -48,9 +48,9 @@ void withIntercept() {
 }
 
 void highVariance() {
-  Double1D a = new Int1D.gen(5, (i) => i + 1).toDouble();
+  Iterable<double> a = 1.to(5).doubles();
 
-  Double1D b = a.sin();
+  Iterable<double> b = a.sin();
 
   final res = ols.fitOne(a, b);
   print(res.x.transpose);

@@ -3,6 +3,7 @@ part of grizzly.regress;
 class LinearClassifier {
   bool predict(Double2DView x) {
     // TODO
+    throw UnimplementedError();
   }
 
   // TODO decisionFunction();
@@ -13,24 +14,25 @@ class LinearClassifier {
 /// Logistic Regression (aka logit, MaxEnt) classifier
 class LogisticRegression {
   /// Fit simple model with one independent variable
-  RegressionResult fit(Numeric1D x, Numeric1D y, {bool fitIntercept: false}) {
+  RegressionResult fit(Num1D x, Num1D y, {bool fitIntercept: false}) {
     // TODO
+    throw UnimplementedError();
   }
 
   /// Fit model with multiple independent variable
-  RegressionResult fitMultipleX(Numeric2D x, Numeric1D y,
-      {bool fitIntercept: false}) {
+  RegressionResult fitMultipleX(Num2D x, Num1D y, {bool fitIntercept: false}) {
     // TODO
+    throw UnimplementedError();
   }
 }
 
 class LibLinear {
-  LibLinear(Double2D x, Numeric1DView y, {double interceptScale: -1.0}) {
+  LibLinear(Double2D x, Iterable<num> y, {double interceptScale: -1.0}) {
     final int l = x.numRows;
     final int n = x.numCols;
 
     // Group training data of the same class
-    final classes = new MakeClasses.label(y);
+    final classes = MakeClasses.label(y);
 
     // TODO weights
 
@@ -47,7 +49,7 @@ class MakeClasses<T> {
 
   final Map<dynamic, int> counts;
 
-  final Int1DView yLabelled;
+  final Iterable<int> yLabelled;
 
   final List<int> starts;
 
@@ -55,39 +57,39 @@ class MakeClasses<T> {
   final List<int> perms;
 
   MakeClasses(
-      {@required this.labels,
-      @required this.labelling,
-      @required this.counts,
-      @required this.yLabelled,
-      @required this.starts,
-      @required this.perms});
+      {required this.labels,
+      required this.labelling,
+      required this.counts,
+      required this.yLabelled,
+      required this.starts,
+      required this.perms});
 
-  factory MakeClasses.label(ArrayView<T> y) {
+  factory MakeClasses.label(Iterable<T> y) {
     final labels = <T>[];
     final labelling = <dynamic, int>{};
     final counts = <dynamic, int>{};
-    final yLabelled = new Int1D.sized(y.length);
+    final yLabelled = List<int>.filled(y.length, 0);
 
     // Find classes and class counts
     for (int i = 0; i < y.length; i++) {
       final thisLabel = y[i];
       if (labelling.containsKey(thisLabel)) {
-        counts[thisLabel]++;
+        counts[thisLabel] = counts[thisLabel]! + 1;
       } else {
         labelling[thisLabel] = labels.length;
         counts[thisLabel] = 1;
         labels.add(thisLabel);
       }
-      yLabelled[i] = labelling[thisLabel];
+      yLabelled[i] = labelling[thisLabel]!;
     }
 
     // Compute starts
-    final starts = new List<int>(labels.length);
+    final starts = List<int>.filled(labels.length, 0);
     starts[0] = 0;
     for (int i = 1; i < labels.length; i++)
-      starts[i] = starts[i - 1] + counts[labels[i - 1]];
+      starts[i] = starts[i - 1] + counts[labels[i - 1]]!;
 
-    final perms = new List<int>(y.length);
+    final perms = List<int>.filled(y.length, 0);
     for (int i = 0; i < y.length; i++) {
       perms[starts[yLabelled[i]]] = i;
       starts[yLabelled[i]]++;
@@ -96,9 +98,9 @@ class MakeClasses<T> {
     // Compute starts
     starts[0] = 0;
     for (int i = 1; i < labels.length; i++)
-      starts[i] = starts[i - 1] + counts[labels[i]];
+      starts[i] = starts[i - 1] + counts[labels[i]]!;
 
-    return new MakeClasses(
+    return MakeClasses(
         labels: labels,
         labelling: labelling,
         counts: counts,

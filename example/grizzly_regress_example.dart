@@ -1,7 +1,7 @@
 // Copyright (c) 2017, SERAGUD. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
-import 'package:grizzly_array/grizzly_array.dart';
+import 'package:grizzly/grizzly.dart';
 import 'package:grizzly_regress/grizzly_regress.dart';
 import 'package:grizzly_linalg/grizzly_linalg.dart';
 
@@ -29,7 +29,7 @@ main() {
   print(asvd.s);
   print(asvd.v);
   print(asvd.u *
-      new Double2D.diagonal(asvd.s) *
+      Double2D.diagonal(asvd.s) *
       asvd.v.transpose);
       */
 
@@ -46,8 +46,8 @@ main() {
   */
 
   /*
-  final x = new Int2D.columns([
-    new List<int>.generate(100, (i) => i + 1),
+  final x = Int2D.columns([
+    List<int>.generate(100, (i) => i + 1),
   ]).toDouble;
   print(x);
   final y = (x * [5]).row.sum;
@@ -55,14 +55,14 @@ main() {
   */
 
   /*
-  final res1 = new OLSGD().fitMultipleX(x, y);
+  final res1 = OLSGD().fitMultipleX(x, y);
   print(res1.coeff);
   print(res1.predict(x[0].toInt()));
   */
 
   /*
   final lst =
-      new StochasticLeastSquareGradientDescent(x, y, maxIterations: 100);
+      StochasticLeastSquareGradientDescent(x, y, maxIterations: 100);
   lst.learn();
   print(lst.params);
   */

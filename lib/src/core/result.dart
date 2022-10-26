@@ -2,13 +2,13 @@ part of grizzly.regress;
 
 class RegressionResult extends RegressionModel implements RegressionResultBase {
   /// Exogenous variables
-  final Numeric2DView x;
+  final Num2DView x;
 
   /// Endogenous variables
-  final Numeric1DView y;
+  final Iterable<num> y;
 
   /// Estimated coefficients for the linear regression problem
-  final Double1DFix coeff;
+  final Iterable<num> coeff;
 
   /// Is the intercept induced by the model?
   final bool interceptFitted;
@@ -20,13 +20,13 @@ class RegressionResult extends RegressionModel implements RegressionResultBase {
   final int rank;
 
   RegressionResult(this.coeff,
-      {@required this.x,
-      @required this.y,
-      @required this.normalizedCovParams,
-      @required this.rank,
+      {required this.x,
+      required this.y,
+      required this.normalizedCovParams,
+      required this.rank,
       this.interceptFitted: false}) {
     if (coeff.length < 2 && interceptFitted)
-      throw new Exception('Intercepted not fitted!');
+      throw Exception('Intercepted not fitted!');
   }
 
   Double2DView get covParams => normalizedCovParams * scale;
@@ -56,32 +56,23 @@ class RegressionResult extends RegressionModel implements RegressionResultBase {
   /// Defined as the number of observations minus the rank of the regressor matrix.
   int get dofResiduals => nObs - rank;
 
-  Double1DView _residuals;
-
   /// The residuals of the model
-  Double1DView get residuals => _residuals ??= (y.toDouble() - predict(x)).view;
-
-  double _ssr;
+  late final Iterable<num> residuals = y - predict(x);
 
   /// Sum of squared residuals
-  double get ssr => _ssr ??= residuals.dot(residuals);
-
-  double _tss;
+  late final num ssr = residuals.dot(residuals);
 
   /// Un-centered total sum of squares.
   ///
   /// Sum of the squared values of the endogenous response variable
-  double get tss => _tss ??= y.dot(y);
-
-  double _centeredTss;
+  late final num tss = y.dot(y);
 
   /// Centered total sum of squares
-  double get centeredTss {
-    if (_centeredTss != null) return _centeredTss;
+  late final num centeredTss = _centeredTss();
 
-    final Double1D centeredY = y - y.mean;
-    _centeredTss = centeredY.dot(centeredY);
-    return _centeredTss;
+  num _centeredTss() {
+    final Iterable<num> centeredY = y - y.mean;
+    return centeredY.dot(centeredY);
   }
 
   /// Explained sum of squares.
@@ -89,7 +80,7 @@ class RegressionResult extends RegressionModel implements RegressionResultBase {
   /// If a constant is present, the centered total sum of squares minus the sum
   /// of squared residuals.
   /// If there is no constant, the un-centered total sum of squares is used.
-  double get ess => interceptFitted ? (centeredTss - ssr) : (tss - ssr);
+  late final num ess = interceptFitted ? (centeredTss - ssr) : (tss - ssr);
 
   /// R-squared of a model with an intercept.
   ///
@@ -107,7 +98,7 @@ class RegressionResult extends RegressionModel implements RegressionResultBase {
   }
 
   /// The standard errors of the parameter estimates.
-  Double1D get bse => covParams.diagonal.sqrt();
+  late final Iterable<double> bse = covParams.diagonal.sqrt();
 
   double get mse => ess / dof;
 
@@ -120,22 +111,16 @@ class RegressionResult extends RegressionModel implements RegressionResultBase {
       return tss / (dof + dofResiduals);
   }
 
-  Double1D _tvalues;
-
-  @override
   /// Returns the t-statistic of the parameter estimate.
-  Double1D get tvalues => _tvalues ??= coeff / bse;
+  @override
+  late final Iterable<double> tvalues = coeff / bse;
 
-  String toString() {
-    StringBuffer sb = new StringBuffer();
-
-    final t = table(
-        ['Name', 'Value', 'Std err', 't', 'P>|t|', '[0.025', '0.975]'],
-        globalPadding: pad(before: 2, after: 2));
+  String toString({TableRenderer renderer = const TableRenderer()}) {
+    final rows = <List>[];
     for (int i = 0; i < coeff.length; i++) {
       if (i < (coeff.length - 1) && interceptFitted) {
-        t.row([
-          x.names[i] ?? 'x$i',
+        rows.add([
+          x is Named2DView ? (x as Named2DView).names[i] : 'x$i',
           coeff[i],
           bse[i],
           tvalues[i],
@@ -144,7 +129,7 @@ class RegressionResult extends RegressionModel implements RegressionResultBase {
           '-', // TODO
         ]);
       } else {
-        t.row([
+        rows.add([
           'intercept',
           coeff[i],
           bse[i],
@@ -155,7 +140,14 @@ class RegressionResult extends RegressionModel implements RegressionResultBase {
         ]);
       }
     }
-    sb.writeln(t);
-    return sb.toString();
+    return renderer.render(rows, columns: [
+      'Name',
+      'Value',
+      'Std err',
+      't',
+      'P>|t|',
+      '[0.025',
+      '0.975]',
+    ]);
   }
 }

@@ -2,15 +2,15 @@ part of grizzly.regress;
 
 /// Interface for regression result
 abstract class RegressionResultBase {
-  Double1DView get coeff;
+  Iterable<num> get coeff;
 
   bool get interceptFitted;
 
   Double2DView get normalizedCovParams;
 
-  Numeric2DView get x;
+  Num2DView get x;
 
-  Numeric1DView get y;
+  Iterable<num> get y;
 
   int get rank;
 
@@ -30,22 +30,22 @@ abstract class RegressionResultBase {
 
   int get dofResiduals;
 
-  Double1DView get residuals;
+  Iterable<num> get residuals;
 
-  double get ssr;
+  num get ssr;
 
-  double get tss;
+  num get tss;
 
-  double get centeredTss;
+  num get centeredTss;
 
-  double get ess;
+  num get ess;
 
   double get r2;
 
   double get r2Adjusted;
 
   /// The standard errors of the parameter estimates
-  Double1D get bse;
+  Iterable<double> get bse;
 
   /// Mean squared error of the model.
   ///
@@ -63,7 +63,7 @@ abstract class RegressionResultBase {
   double get mseTotal;
 
   /// Returns the t-statistic of the parameter estimate.
-  Double1D get tvalues;
+  Iterable<double> get tvalues;
 
 // TODO
 }
@@ -71,15 +71,15 @@ abstract class RegressionResultBase {
 
 /// Interface for regression result
 abstract class MultivariateRegressionResultBase {
-  Double1DView get coeff;
+  Iterable<double> get coeff;
 
   bool get interceptFitted;
 
-  Double2DView get normalizedCovParams;
+  Double2D get normalizedCovParams;
 
-  Numeric2DView get x;
+  Num2DView get x;
 
-  Numeric2DView get y;
+  Num2DView get y;
 
   int get rank;
 
