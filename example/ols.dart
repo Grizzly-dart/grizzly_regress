@@ -2,11 +2,11 @@ import 'package:grizzly/grizzly.dart';
 import 'package:grizzly_regress/grizzly_regress.dart';
 
 void withoutIntercept() {
-  Iterable<double> a = 1.to(5).doubles();
+  Iterable<double> a = 1.to(5).toDouble();
 
   Iterable<double> b = a * 5;
 
-  final res = ols.fitOne(a, b);
+  final res = ols.fit(a, b);
   print(res.x.transpose);
   print(res.y);
 
@@ -25,11 +25,11 @@ void withoutIntercept() {
 }
 
 void withIntercept() {
-  Iterable<double> a = 1.to(5).doubles();
+  Iterable<double> a = 1.to(5).toDouble();
 
-  Iterable<double> b = (a * 5).addition(3);
+  Iterable<double> b = (a * 5).plus(3);
 
-  final res = ols.fitOne(a, b, fitIntercept: true);
+  final res = ols.fit(a, b, fitIntercept: true);
   print(res.x.transpose);
   print(res.y);
 
@@ -48,11 +48,11 @@ void withIntercept() {
 }
 
 void highVariance() {
-  Iterable<double> a = 1.to(5).doubles();
+  Iterable<double> a = 1.to(5).toDouble();
 
   Iterable<double> b = a.sin();
 
-  final res = ols.fitOne(a, b);
+  final res = ols.fit(a, b);
   print(res.x.transpose);
   print(res.y);
 

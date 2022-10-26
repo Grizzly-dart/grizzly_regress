@@ -4,7 +4,6 @@
 library grizzly.regress;
 
 import 'dart:math' as math;
-import 'package:meta/meta.dart';
 import 'package:grizzly/grizzly.dart';
 import 'package:grizzly_linalg/grizzly_linalg.dart';
 import 'package:text_table/text_table.dart';
@@ -22,16 +21,17 @@ part 'logistic/logistic.dart';
 /// Defines interface for regression
 abstract class Regression {
   /// Fit simple model with one independent variable
-  RegressionResult fitOne(Num1D x, Num1D y, {bool fitIntercept: false});
+  RegressionResult fit(Num1D x, Num1D y, {bool fitIntercept: false});
 
   /// Fit model with multiple independent variable
-  RegressionResult fit(Num2D x, Num1D y, {bool fitIntercept: false});
+  RegressionResult fitMultivariate(Num2D x, Num1D y,
+      {bool fitIntercept: false});
 
   /// Fit simple model with one independent variable
-  List<RegressionResult> fitOneMultivariate(Iterable<num> x, Num2DView y,
+  List<RegressionResult> fitMany(Iterable<num> x, Num2DView y,
       {bool fitIntercept: false});
 
   /// Fit model with multiple independent variable
-  List<RegressionResult> fitMultivariate(Num2D x, Num2D y,
+  List<RegressionResult> fitManyMultivariate(Num2D x, Num2D y,
       {bool fitIntercept: false});
 }

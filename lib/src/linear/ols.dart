@@ -23,11 +23,11 @@ class Ols implements LinearRegression {
   const Ols();
 
   @override
-  RegressionResult fitOne(Iterable<num> x, Iterable<num> y,
+  RegressionResult fit(Iterable<num> x, Iterable<num> y,
       {bool fitIntercept: false}) {
-    Double2D actualX = x.doubles().toCol();
-    Double2D procX = actualX.clone();
+    Double2D actualX = x.toDouble().toCol();
 
+    Double2D procX = actualX.clone();
     if (fitIntercept) procX.cols.addScalar(1.0);
 
     final SVD xSvd = svd(procX);
@@ -37,20 +37,20 @@ class Ols implements LinearRegression {
     final Double1D coeff = pinv.matmul(y.toCol().toDouble()).cols[0];
     final Double2D cov = pinv.matmul(pinv.transpose);
 
-    // TODO x, y must be copied views
     return RegressionResult(coeff,
         x: actualX,
-        y: y,
+        y: y.toList(),
         normalizedCovParams: cov,
         interceptFitted: fitIntercept,
         rank: xSvd.rank());
   }
 
   @override
-  RegressionResult fit(Num2D x, Iterable<num> y, {bool fitIntercept: false}) {
+  RegressionResult fitMultivariate(Num2D x, Iterable<num> y,
+      {bool fitIntercept: false}) {
     Double2D actualX = x.toDouble();
-    Double2D procX = actualX.clone();
 
+    Double2D procX = actualX.clone();
     if (fitIntercept) procX.cols.addScalar(1.0);
 
     final SVD xSvd = svd(procX);
@@ -60,45 +60,38 @@ class Ols implements LinearRegression {
     final Iterable<double> coeff = pinv.matmul(y.toCol().toDouble()).cols[0];
     final Double2D cov = pinv.matmul(pinv.transpose);
 
-    // TODO x, y must be copied views
     return RegressionResult(coeff,
         x: actualX,
-        y: y,
+        y: y.toList(),
         normalizedCovParams: cov,
         interceptFitted: fitIntercept,
         rank: xSvd.rank());
   }
 
   /// Fit simple model with one independent variable
-  List<RegressionResult> fitOneMultivariate(Iterable<num> x, Num2DView y,
+  List<RegressionResult> fitMany(Iterable<num> x, Num2DView y,
       {bool fitIntercept: false}) {
-    Double2D actualX = x.doubles().toCol();
-    Double2D procX = actualX.clone();
+    Double2D actualX = x.toDouble().toCol();
 
+    Double2D procX = actualX.clone();
     if (fitIntercept) procX.cols.addScalar(1.0);
 
     final SVD xSvd = svd(procX);
 
     final Double2D pinv = xSvd.pinv();
 
-    final Double1D coeff = pinv.matmul(y.transpose.toDouble()).cols[0];
+    final Double2D coeff = pinv.matmul(y.transpose.toDouble());
     final Double2D cov = pinv.matmul(pinv.transpose);
+
+    print(coeff);
 
     throw UnimplementedError();
 
     // TODO x, y must be copied views
-    /* TODO
-    return MultivariateRegressionResultBase(coeff,
-        x: procX,
-        y: y,
-        normalizedCovParams: cov,
-        interceptFitted: fitIntercept,
-        rank: xSvd.rank());
-     */
   }
 
   /// Fit model with multiple independent variable
-  List<RegressionResult> fitMultivariate(Num2D x, Num2D y,
+  List<RegressionResult> fitManyMultivariate(Num2D x, Num2D y,
       {bool fitIntercept: false}) {
     // TODO
     throw UnimplementedError();
