@@ -151,3 +151,16 @@ class RegressionResult extends RegressionModel implements RegressionResultBase {
     ]);
   }
 }
+
+extension RegressionResultIterableExt on Iterable<RegressionResult> {
+  String string() {
+    final sb = StringBuffer();
+
+    for(final item in this) {
+      sb.write(item.toString());
+      sb.writeln();
+    }
+
+    return sb.toString();
+  }
+}

@@ -3,6 +3,7 @@
 
 library grizzly.regress;
 
+import 'package:collection/collection.dart';
 import 'dart:math' as math;
 import 'package:grizzly/grizzly.dart';
 import 'package:grizzly_linalg/grizzly_linalg.dart';
@@ -32,6 +33,6 @@ abstract class Regression {
       {bool fitIntercept: false});
 
   /// Fit model with multiple independent variable
-  List<RegressionResult> fitManyMultivariate(Num2D x, Num2D y,
+  List<RegressionResult> fitManyMultivariate(Num2DView x, Num2DView y,
       {bool fitIntercept: false});
 }
