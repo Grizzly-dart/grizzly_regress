@@ -12,7 +12,7 @@ main() {
   final res = ols.fitManyMultivariate(a, b);
   print(res.string());
 
-  print(res.map((e) => e.coeff.print()));
+  res.forEach((e) => e.coeff.print());
 
   /*
   print(res.coeff);
