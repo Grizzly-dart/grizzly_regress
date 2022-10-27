@@ -22,14 +22,14 @@ part 'logistic/logistic.dart';
 /// Defines interface for regression
 abstract class Regression {
   /// Fit simple model with one independent variable
-  RegressionResult fit(Num1D x, Num1D y, {bool fitIntercept: false});
+  RegressionResult fit(Num1DView x, Num1DView y, {bool fitIntercept: false});
 
   /// Fit model with multiple independent variable
-  RegressionResult fitMultivariate(Num2D x, Num1D y,
+  RegressionResult fitMultivariate(Num2DView x, Num1DView y,
       {bool fitIntercept: false});
 
   /// Fit simple model with one independent variable
-  List<RegressionResult> fitMany(Iterable<num> x, Num2DView y,
+  List<RegressionResult> fitMany(Num1DView x, Num2DView y,
       {bool fitIntercept: false});
 
   /// Fit model with multiple independent variable

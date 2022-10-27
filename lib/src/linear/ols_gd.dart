@@ -1,48 +1,77 @@
 part of grizzly.regress;
 
-/* TODO
 /// Ordinary least square regression performed using stochastic gradient descent
-class OLSStochasticGD implements LinearRegression {
-  const OLSStochasticGD();
+class OLS_SGD implements LinearRegression {
+  const OLS_SGD();
 
-  RegressionResult fit(Numeric1D x, Numeric1D y, {bool fitIntercept: false}) {
+  /// Fit simple model with one independent variable
+  RegressionResult fit(Num1DView x, Num1DView y, {bool fitIntercept: false}) {
     // TODO
+    throw UnimplementedError();
   }
 
-  RegressionResult fitMultipleX(Numeric2D x, Numeric1D y,
+  /// Fit model with multiple independent variable
+  RegressionResult fitMultivariate(Num2DView x, Num1DView y,
       {bool fitIntercept: false}) {
-    // TODO
+    throw UnimplementedError();
+  }
+
+  /// Fit simple model with one independent variable
+  List<RegressionResult> fitMany(Iterable<num> x, Num2DView y,
+      {bool fitIntercept: false}) {
+    throw UnimplementedError();
+  }
+
+  /// Fit model with multiple independent variable
+  List<RegressionResult> fitManyMultivariate(Num2DView x, Num2DView y,
+      {bool fitIntercept: false}) {
+    throw UnimplementedError();
   }
 }
 
 /// Ordinary least square regression performed using gradient descent
-class OLSGD implements LinearRegression {
+class OLS_GD implements LinearRegression {
   /// Learning rate used in gradient descent
   final double learningRate;
 
   /// Maximum iterations
   final int maxIterations;
 
-  const OLSGD({this.learningRate: 1e-4, this.maxIterations: 10000});
+  const OLS_GD({this.learningRate: 1e-4, this.maxIterations: 10000});
 
   /// Performs a simple linear regression fit
-  RegressionResult fit(Numeric1D x, Numeric1D y, {bool fitIntercept: false}) {
-    // TODO
-  }
+  RegressionResult fit(Num1DView x, Num1DView y, {bool fitIntercept: false}) =>
+      fitMultivariate(x.toCol(), y, fitIntercept: fitIntercept);
 
-  RegressionResult fitMultipleX(Numeric2D x, Numeric1DView y,
+  RegressionResult fitMultivariate(Num2DView x, Num1DView y,
       {bool fitIntercept: false}) {
-    Numeric2D tempX = x;
-    if (fitIntercept) {
-      tempX = x.toDouble();
-      tempX.col.insertScalar(0, 1.0);
-    }
-    final gd = BatchLeastSquareGradientDescent(tempX, y,
+    Double2D tempX = x.toDouble();
+    Num1D tempY = y.toList();
+
+    if (fitIntercept) tempX.cols.addScalar(1.0);
+
+    final gd = BatchLeastSquareGradientDescent(tempX, tempY,
         learningRate: learningRate, maxIterations: maxIterations);
     gd.learn();
-    // TODO x, y must be copied views
-    return RegressionResult(gd.params,
-        x: tempX, y: y, interceptFitted: fitIntercept);
+    return RegressionResult(
+      gd.params,
+      x: tempX,
+      y: tempY,
+      normalizedCovParams: [], // TODO
+      interceptFitted: fitIntercept,
+      rank: 1, // TODO
+    );
+  }
+
+  /// Fit simple model with one independent variable
+  List<RegressionResult> fitMany(Iterable<num> x, Num2DView y,
+      {bool fitIntercept: false}) {
+    throw UnimplementedError();
+  }
+
+  /// Fit model with multiple independent variable
+  List<RegressionResult> fitManyMultivariate(Num2DView x, Num2DView y,
+      {bool fitIntercept: false}) {
+    throw UnimplementedError();
   }
 }
-*/

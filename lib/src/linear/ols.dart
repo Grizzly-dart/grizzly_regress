@@ -46,7 +46,7 @@ class Ols implements LinearRegression {
   }
 
   @override
-  RegressionResult fitMultivariate(Num2D x, Iterable<num> y,
+  RegressionResult fitMultivariate(Num2DView x, Iterable<num> y,
       {bool fitIntercept: false}) {
     Double2D actualX = x.toDouble();
 
