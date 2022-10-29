@@ -73,7 +73,7 @@ void highVariance() {
 main() {
   print("Without intercept:");
   withoutIntercept();
-  
+
   print("\n\nWith intercept:");
   withIntercept();
 

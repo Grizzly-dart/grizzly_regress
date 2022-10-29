@@ -18,21 +18,3 @@ part 'linear/ols.dart';
 part 'linear/ols_gd.dart';
 
 part 'logistic/logistic.dart';
-
-/// Defines interface for regression
-abstract class Regression {
-  /// Fit simple model with one independent variable
-  RegressionResult fit(Num1DView x, Num1DView y, {bool fitIntercept: false});
-
-  /// Fit model with multiple independent variable
-  RegressionResult fitMultivariate(Num2DView x, Num1DView y,
-      {bool fitIntercept: false});
-
-  /// Fit simple model with one independent variable
-  List<RegressionResult> fitMany(Num1DView x, Num2DView y,
-      {bool fitIntercept: false});
-
-  /// Fit model with multiple independent variable
-  List<RegressionResult> fitManyMultivariate(Num2DView x, Num2DView y,
-      {bool fitIntercept: false});
-}

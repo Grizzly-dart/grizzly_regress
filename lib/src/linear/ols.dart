@@ -13,18 +13,17 @@ part of grizzly.regress;
 ///     final RegressionResult res = ols.fitMultipleX(x, y);
 ///     print(res.coeff); // => (-7.501368540301152, -9.501368540301195, 16.50136854030119)
 ///     print(res.predict(x[0].toInt())); // => 16.000000000000036
-const Ols ols = const Ols();
+const ols = const Ols();
 
 /// Ordinary Least Square regression performed by directly solving 'X * B = Y'.
 ///
 /// Uses QR decomposition to solve 'XB=Y' when X is full rank.
 /// Uses LU decomposition to solve 'XB=Y' when X is not full rank.
-class Ols implements LinearRegression {
+class Ols implements LinearRegressor {
   const Ols();
 
   @override
-  RegressionResult fit(Iterable<num> x, Iterable<num> y,
-      {bool fitIntercept: false}) {
+  OLSResult fit(Iterable<num> x, Iterable<num> y, {bool fitIntercept: false}) {
     Double2D actualX = x.toDouble().toCol();
 
     Double2D procX = actualX.clone();
@@ -37,7 +36,7 @@ class Ols implements LinearRegression {
     final Double1D coeff = pinv.matmul(y.toCol().toDouble()).cols[0];
     final Double2D cov = pinv.matmul(pinv.transpose);
 
-    return RegressionResult(coeff,
+    return OLSResult(coeff,
         x: actualX,
         y: y.toList(),
         normalizedCovParams: cov,
@@ -46,7 +45,7 @@ class Ols implements LinearRegression {
   }
 
   @override
-  RegressionResult fitMultivariate(Num2DView x, Iterable<num> y,
+  OLSResult fitMultivariate(Num2DView x, Iterable<num> y,
       {bool fitIntercept: false}) {
     Double2D actualX = x.toDouble();
 
@@ -60,7 +59,7 @@ class Ols implements LinearRegression {
     final Iterable<double> coeff = pinv.matmul(y.toCol().toDouble()).cols[0];
     final Double2D cov = pinv.matmul(pinv.transpose);
 
-    return RegressionResult(coeff,
+    return OLSResult(coeff,
         x: actualX,
         y: y.toList(),
         normalizedCovParams: cov,
@@ -69,7 +68,7 @@ class Ols implements LinearRegression {
   }
 
   /// Fit simple model with one independent variable
-  List<RegressionResult> fitMany(Iterable<num> x, Num2DView y,
+  List<OLSResult> fitMany(Iterable<num> x, Num2DView y,
       {bool fitIntercept: false}) {
     Double2D actualX = x.toDouble().toCol();
     y = y.toList2D();
@@ -85,7 +84,7 @@ class Ols implements LinearRegression {
     final Double2D cov = pinv.matmul(pinv.transpose);
 
     return y.cols
-        .mapIndexed((i, e) => RegressionResult(coeff.cols[i],
+        .mapIndexed((i, e) => OLSResult(coeff.cols[i],
             x: actualX,
             y: y.cols[i],
             normalizedCovParams: cov,
@@ -95,7 +94,7 @@ class Ols implements LinearRegression {
   }
 
   /// Fit model with multiple independent variable
-  List<RegressionResult> fitManyMultivariate(Num2DView x, Num2DView y,
+  List<OLSResult> fitManyMultivariate(Num2DView x, Num2DView y,
       {bool fitIntercept: false}) {
     Double2D actualX = x.toDouble();
     y = y.toList2D();
@@ -111,12 +110,12 @@ class Ols implements LinearRegression {
     final Double2D cov = pinv.matmul(pinv.transpose);
 
     return y.cols
-        .mapIndexed((i, e) => RegressionResult(coeff.cols[i],
-        x: actualX,
-        y: y.cols[i],
-        normalizedCovParams: cov,
-        interceptFitted: fitIntercept,
-        rank: xSvd.rank()))
+        .mapIndexed((i, e) => OLSResult(coeff.cols[i],
+            x: actualX,
+            y: y.cols[i],
+            normalizedCovParams: cov,
+            interceptFitted: fitIntercept,
+            rank: xSvd.rank()))
         .toList();
   }
 }

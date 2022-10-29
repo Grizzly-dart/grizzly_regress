@@ -14,13 +14,13 @@ class LinearClassifier {
 /// Logistic Regression (aka logit, MaxEnt) classifier
 class LogisticRegression {
   /// Fit simple model with one independent variable
-  RegressionResult fit(Num1D x, Num1D y, {bool fitIntercept: false}) {
+  OLSResult fit(Num1D x, Num1D y, {bool fitIntercept: false}) {
     // TODO
     throw UnimplementedError();
   }
 
   /// Fit model with multiple independent variable
-  RegressionResult fitMultipleX(Num2D x, Num1D y, {bool fitIntercept: false}) {
+  OLSResult fitMultipleX(Num2D x, Num1D y, {bool fitIntercept: false}) {
     // TODO
     throw UnimplementedError();
   }
