@@ -11,7 +11,7 @@ class SGDRegressor implements LinearRegressor {
   final LeastSquareRegularizer? regularizer;
 
   const SGDRegressor(
-      {this.learningRate: 1e-4, this.maxIterations: 10000, this.regularizer});
+      {this.learningRate: 1e-2, this.maxIterations: 10000, this.regularizer});
 
   /// Fit simple model with one independent variable
   SGDResult fit(Num1DView x, Num1DView y, {bool fitIntercept: false}) =>

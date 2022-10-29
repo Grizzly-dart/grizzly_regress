@@ -17,5 +17,7 @@ dependencies:
 
 dev_dependencies:
   test:
+  json_stream:
+    path: ../json_stream
 
 dev_dependency_overrides:
