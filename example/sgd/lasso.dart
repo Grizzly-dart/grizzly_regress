@@ -10,7 +10,7 @@ void main() {
   final rnd = Random(5);
 
   Iterable<double> a = 1.to(10).doubleView();
-  final b = a.map((e) => rnd.nextDouble());
+  final b = a.map((e) => rnd.nextDouble().toPrecision(3));
   final x = [a, b].transpose.toList();
   print(x.tableString());
   Iterable<double> y = (a * 5).plus(2);
@@ -18,7 +18,7 @@ void main() {
 
   {
     print('SGD:');
-    final model = SGDRegressor(maxIterations: 50000)
+    final model = SGDRegressor(maxIterations: 5000000)
         .fitMultivariate(x, y, fitIntercept: true);
     model.print();
     print(model.coeff);
