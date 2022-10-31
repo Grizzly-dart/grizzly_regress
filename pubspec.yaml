@@ -14,6 +14,8 @@ dependencies:
   grizzly_linalg:
     path: ../grizzly_linalg
   meta: ^1.8.0
+  ninja_prime:
+    path: ../prime
 
 dev_dependencies:
   test:
