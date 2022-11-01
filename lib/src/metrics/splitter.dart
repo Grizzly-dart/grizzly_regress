@@ -1,3 +1,5 @@
+import 'package:grizzly/grizzly.dart';
+
 class Split {
   final Iterable<int> train;
   final Iterable<int> test;
@@ -10,7 +12,18 @@ abstract class Splitter {
 }
 
 class KFold implements Splitter {
-  Iterable<Split> split(int splits) {
+  Iterable<Split> split(int items, int splits) {
+    final n = items ~/ splits;
+    final m = items % splits;
+
+    for(int i = 0; i < splits-m; i++) {
+      1.to();
+      // TODO
+    }
+
+    for(int i = 0; i < m; i++) {
+      // TODO
+    }
 /*
 def split(x,y):
     print('-------')
